@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "f_constants.h"
 #include "f_grid.h"
+
+#define MIN_GRID_SIZE 5
+#define MAX_GRID_SIZE 20
 
 int main(int argc, char *argv) {
     printf("%s\n\n", "Welcome to Frigate!");

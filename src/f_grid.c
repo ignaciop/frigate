@@ -14,7 +14,7 @@ struct grid *new_grid(int grid_size) {
     
     /* Allocate a 1 x grid_size array to hold pointers to more arrays */
     
-    int **elements = (int **)malloc(sizeof(int *) * grid_size);
+    char **elements = (char **)malloc(sizeof(char *) * grid_size);
     
     if (elements == NULL) {
         perror("Cannot allocate memory for new grid.");
@@ -25,7 +25,7 @@ struct grid *new_grid(int grid_size) {
     /* Allocate each row in that column */
     
     for (int i = 0; i < grid_size; i++) {
-        elements[i] = (int *)malloc(sizeof(int) * grid_size);
+        elements[i] = (char *)malloc(sizeof(char) * grid_size);
         
         if (elements[i] == NULL) {
             perror("Cannot allocate memory for new grid row.");
@@ -47,7 +47,9 @@ void init_grid(struct grid *gd) {
     
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            (gd->elements)[i][j] = rand() % 4;
+            int index = rand() % 3;
+            
+            (gd->elements)[i][j] = SHIP_TYPES[index];
         }
     }
 }
@@ -57,7 +59,7 @@ void print_grid(const struct grid *gd) {
     
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            printf((j == size - 1) ? "%i\n" : "%i ", (gd->elements)[i][j]);
+            printf((j == size - 1) ? "%c\n" : "%c ", (gd->elements)[i][j]);
         }
     }
 }

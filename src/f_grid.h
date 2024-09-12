@@ -1,9 +1,11 @@
 #ifndef F_GRID_H
 #define F_GRID_H
 
+#define SHIP_TYPES (char[]){'b', 'c', 'f'}
+
 struct grid {
     int size;
-    int **elements;
+    char **elements;
 };
 
 struct grid *new_grid(int grid_size);
