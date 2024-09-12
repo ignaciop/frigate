@@ -58,6 +58,8 @@ void print_grid(const struct grid *gd) {
     int size = gd->size;
     
     for (int i = 0; i < size; i++) {
+        printf("%2i | ", i + 1);
+        
         for (int j = 0; j < size; j++) {
             printf((j == size - 1) ? "%c\n" : "%c ", (gd->elements)[i][j]);
         }
@@ -77,7 +79,7 @@ void delete_grid(struct grid *gd) {
     free(gd->elements);
     gd->elements = NULL;
     
-    /* Deallocate grid object*/
+    /* Deallocate grid object */
     free(gd);
     gd = NULL;
 }
