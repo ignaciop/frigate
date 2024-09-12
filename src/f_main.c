@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "f_constants.h"
+#include "f_grid.h"
 
 int main(int argc, char *argv) {
     printf("%s\n\n", "Welcome to Frigate!");
@@ -18,9 +19,15 @@ int main(int argc, char *argv) {
         grid_size = MIN_GRID_SIZE;
     }
     
-    int shells = grid_size >> 1;
+    //int shells = grid_size >> 1;
     
-    printf("%d x %d, %d shells\n", grid_size, grid_size, shells);
+    //printf("%d x %d, %d shells\n", grid_size, grid_size, shells);
+    
+    struct grid *gd = new_grid(grid_size);
+    
+    init_grid(gd);
+    print_grid(gd);
+    delete_grid(gd);
 
     return EXIT_SUCCESS;
 }
