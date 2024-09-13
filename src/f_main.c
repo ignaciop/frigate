@@ -28,11 +28,21 @@ int main(int argc, char *argv) {
     
     //int shells = grid_size >> 1;
     
-    struct grid *gd = new_grid(grid_size);
+    struct grid *sc = new_grid(grid_size);
     
-    init_grid(gd);
-    print_grid(gd);
-    delete_grid(gd);
+    ships_grid(sc);
+    print_grid(sc);
+    delete_grid(sc);
+    
+    struct grid *uc = new_grid(grid_size);
+    
+    user_grid(uc);
+    print_grid(uc);
+    
+    set_value_at(uc, uc->size - 1, uc->size - 2, 'm');
+    print_grid(uc);
+    
+    delete_grid(uc);
 
     return EXIT_SUCCESS;
 }
