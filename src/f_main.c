@@ -12,7 +12,6 @@ int main(int argc, char *argv) {
     printf("%s", "How large should I make the grid? ");
     
     /* Set-up variables */
-    
     int grid_size = 0;
     scanf("%d", &grid_size);
     
@@ -34,15 +33,15 @@ int main(int argc, char *argv) {
     print_grid(sc);
     delete_grid(sc);
     
-    struct grid *uc = new_grid(grid_size);
+    /*struct grid *uc = new_grid(grid_size);
     
     user_grid(uc);
+    print_grid(uc);*/
+    
+    /*set_value_at(uc, uc->size - 1, uc->size - 2, 'm');
     print_grid(uc);
     
-    set_value_at(uc, uc->size - 1, uc->size - 2, 'm');
-    print_grid(uc);
-    
-    delete_grid(uc);
+    delete_grid(uc);*/
 
     return EXIT_SUCCESS;
 }
