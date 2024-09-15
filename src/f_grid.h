@@ -19,7 +19,7 @@ struct grid {
 struct grid *new_grid(int grid_size);
 void water_grid(struct grid *gd);
 void ships_grid(struct grid *gd);
-int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int horizontal);
+int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int orientation);
 void place_ship(struct grid *gd, struct ship *nf, int posx, int posy);
 int valid_position(const struct grid *gd, int posx, int posy);
 void set_value_at(struct grid *gd, int pos_x, int pos_y, char value);

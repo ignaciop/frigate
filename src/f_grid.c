@@ -96,10 +96,11 @@ void ships_grid(struct grid *gd) {
     }
 }
 
-int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int horizontal) {
+int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int orientation) {
     int enabled = 1;
     
-    if (horizontal) {
+    if (orientation) {
+        /* Orientation = 1 (Horizontal) */
         for (int j = 0; j < sp->size; j++) {
             if (!valid_position(gd, posx, posy + j) || gd->elements[posx][posy + j] != WATER) {
                 enabled = 0;
@@ -107,6 +108,7 @@ int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int ho
             }
         }
     } else {
+        /* Orientation = 0 (Vertical) */
         for (int i = 0; i < sp->size; i++) {
             if (!valid_position(gd, posx + i, posy) || gd->elements[posx + i][posy] != WATER) {
                 enabled = 0;
@@ -119,17 +121,17 @@ int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int ho
 }
 
 void place_ship(struct grid *gd, struct ship *sp, int posx, int posy) {
-    int horizontal = 0;
+    int orientation = 0;
     
     do {
         posx = rand() % gd->size;
         posy = rand() % gd->size;
         
         /* Randomly decide orientation: 0 for vertical, 1 for horizontal */
-        horizontal = rand() % 2;
-    } while (!place_available(gd, sp, posx, posy, horizontal));
+        orientation = rand() % 2;
+    } while (!place_available(gd, sp, posx, posy, orientation));
     
-    if (horizontal) {
+    if (orientation) {
         /* Place ship horizontally */
         for (int j = 0; j < sp->size; j++) {
             gd->elements[posx][posy + j] = sp->type;
