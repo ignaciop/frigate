@@ -96,33 +96,51 @@ void ships_grid(struct grid *gd) {
     }
 }
 
-int can_place_ship(struct grid *gd, struct ship *sp, int posx, int posy) {
-    int ship_place = posx + sp->size;
-    int is_water = 1;
+int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int horizontal) {
+    int enabled = 1;
     
-    for (int j = 0; j < sp->size; j++) {
-        if (gd->elements[posx][posy + j] != WATER) {
-            is_water = 0;
-            break;
+    if (horizontal) {
+        for (int j = 0; j < sp->size; j++) {
+            if (!valid_position(gd, posx, posy + j) || gd->elements[posx][posy + j] != WATER) {
+                enabled = 0;
+                break;
+            }
+        }
+    } else {
+        for (int i = 0; i < sp->size; i++) {
+            if (!valid_position(gd, posx + i, posy) || gd->elements[posx + i][posy] != WATER) {
+                enabled = 0;
+                break;
+            }
         }
     }
     
-    return 0 <= ship_place && ship_place <= gd->size && is_water;
+    return enabled;
 }
 
-
 void place_ship(struct grid *gd, struct ship *sp, int posx, int posy) {
+    int horizontal = 0;
+    
     do {
         posx = rand() % gd->size;
         posy = rand() % gd->size;
-    } while (!can_place_ship(gd, sp, posx, posy));
+        
+        /* Randomly decide orientation: 0 for vertical, 1 for horizontal */
+        horizontal = rand() % 2;
+    } while (!place_available(gd, sp, posx, posy, horizontal));
     
-   
-    for (int j = 0; j < sp->size; j++) {
-        gd->elements[posx][posy + j] = sp->type;
+    if (horizontal) {
+        /* Place ship horizontally */
+        for (int j = 0; j < sp->size; j++) {
+            gd->elements[posx][posy + j] = sp->type;
+        }
+    } else {
+        /* Place ship vertically */
+        for (int i = 0; i < sp->size; i++) {
+            gd->elements[posx + i][posy] = sp->type;
+        }
     }
 }
-
 
 int valid_position(const struct grid *gd, int posx, int posy) {
     int posx_valid = (0 <= posx) && (posx < gd->size);
