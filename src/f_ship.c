@@ -18,7 +18,6 @@ struct ship *new_ship(char s_type, int s_size) {
 }
 
 void delete_ship(struct ship *sp) {
-    
     /* Deallocate ship object */
     free(sp);
     sp = NULL;

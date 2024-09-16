@@ -43,11 +43,9 @@ struct grid *new_grid(int grid_size) {
 }
 
 void water_grid(struct grid *gd) {
-    int size = gd->size;
-    
     /* Fill the grid with water */
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
+    for (int i = 0; i < gd->size; i++) {
+        for (int j = 0; j < gd->size; j++) {
             gd->elements[i][j] = WATER;
         }
     }
@@ -156,37 +154,37 @@ void set_value_at(struct grid *gd, int pos_x, int pos_y, char value) {
 }
 
 void print_grid(const struct grid *gd) {
-    int size = gd->size;
+    printf("\n");
     
     /* Initial column header padding */
     printf("%4c", ' ');
     
     /* Format and print column headers */
-    for (int i = 0; i < size; i++) {
-        printf((i == size - 1) ? "%2c\n" : "%2c", 'A' + i);
+    for (int i = 0; i < gd->size; i++) {
+        printf((i == gd->size - 1) ? "%2c\n" : "%2c", 'A' + i);
     }
     
     /* Initial column delimiter padding */
     printf("%3c+", ' ');
     
     /* Format and print column delimiter */
-    for (int i = 0; i < size; i++) {
-        printf((i == size - 1) ? "--\n" : "--");
+    for (int i = 0; i < gd->size; i++) {
+        printf((i == gd->size - 1) ? "--\n" : "--");
     }
     
     /* Format and print row number, delimiter and corresponding grid element */
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < gd->size; i++) {
         printf("%2i | ", i + 1);
         
-        for (int j = 0; j < size; j++) {
-            printf((j == size - 1) ? "%c\n" : "%c ", gd->elements[i][j]);
+        for (int j = 0; j < gd->size; j++) {
+            printf((j == gd->size - 1) ? "%c\n" : "%c ", gd->elements[i][j]);
         }
     }
+    
+    printf("\n");
 }
 
-void delete_grid(struct grid *gd) {
-    int size = gd->size;
-    
+void delete_grid(struct grid *gd) { 
     /* Deallocate each ship */
     for (int i = 0; i < TOTAL_SHIPS; i++) {
         if (gd->ships[i] != NULL) {
@@ -195,7 +193,7 @@ void delete_grid(struct grid *gd) {
     }
     
     /* Deallocate each row */
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < gd->size; i++) {
         free(gd->elements[i]);
         gd->elements[i] = NULL;
     }
