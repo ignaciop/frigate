@@ -53,7 +53,7 @@ int main(int argc, char *argv) {
         delete_grid(ug);
         
         printf("%s", "Play again (y/N)? ");
-        scanf("%1s%*[^\n]", &again);
+        scanf("%1s%*[^\n]", again);
     } while (again[0] == 'y' || again[0] == 'Y');
     
     printf("You won %d of %d games.\n\n", games_won, total_games);
