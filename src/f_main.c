@@ -16,7 +16,7 @@ int main(int argc, char *argv) {
         
         int n = 0;
         
-        while (n = scanf("%d", &grid_size) == 0) {
+        while ((n = scanf("%d", &grid_size)) == 0) {
             /* Clear what is left */
             scanf("%*[^\n]");
             
