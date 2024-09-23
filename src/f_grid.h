@@ -8,7 +8,7 @@
 #define FRIGATES 2
 #define TOTAL_SHIPS (CARRIERS + BATTLESHIPS + FRIGATES)
 
-#define WATER '-'
+#define WATER '~'
 
 struct grid {
     int size;
@@ -16,13 +16,12 @@ struct grid {
     struct ship *ships[TOTAL_SHIPS];
 };
 
-struct grid *new_grid(int grid_size);
+struct grid *new_grid(const int grid_size);
 void water_grid(struct grid *gd);
 void ships_grid(struct grid *gd);
-int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int orientation);
-void place_ship(struct grid *gd, struct ship *nf, int posx, int posy);
-int valid_position(const struct grid *gd, int posx, int posy);
-void set_value_at(struct grid *gd, int pos_x, int pos_y, char value);
+int place_available(const struct grid *gd, const struct ship *sp, const int posx, const int posy, const int orientation);
+void place_ship(struct grid *gd, const struct ship *sp, int posx, int posy);
+int valid_position(const struct grid *gd, const int posx, const int posy);
 void print_grid(const struct grid *gd);
 void delete_grid(struct grid *gd);
 

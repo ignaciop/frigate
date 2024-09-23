@@ -3,7 +3,7 @@
 
 #include "f_game.h"
 
-int main(int argc, char *argv) {
+int main(void) {
     printf("%s\n\n", "Welcome to Frigate!");
     
     char again[1] = "y";
@@ -11,6 +11,7 @@ int main(int argc, char *argv) {
     int total_games = 0;
     
     do {
+        /* Game set-up */
         printf("%s", "How large should I make the grid? ");
         int grid_size = 0;
         
@@ -36,18 +37,26 @@ int main(int argc, char *argv) {
         
         int shells = (grid_size * grid_size) >> 1;
 
+        /* Set up ships grid (data) and user grid (guesses) */
         struct grid *sg = new_grid(grid_size);
         struct grid *ug = new_grid(grid_size);
         
         ships_grid(sg);
         water_grid(ug);
         
-        int pg = play_game(sg, ug, shells);
+        /* Set up queues for visited positions */
+        struct sg_queue *posx_visited = sg_queue_create();
+        struct sg_queue *posy_visited = sg_queue_create();
+
+        int pg = play_game(sg, ug, shells, posx_visited, posy_visited);
         total_games++;
         
         if (pg) {
             games_won++;
         }
+        
+        sg_queue_destroy(&posx_visited);
+        sg_queue_destroy(&posy_visited);
                
         delete_grid(sg);
         delete_grid(ug);
@@ -56,7 +65,7 @@ int main(int argc, char *argv) {
         scanf("%1s%*[^\n]", again);
     } while (again[0] == 'y' || again[0] == 'Y');
     
-    printf("You won %d of %d games.\n\n", games_won, total_games);
+    printf("You won %d out of %d games.\n\n", games_won, total_games);
     printf("%s\n\n", "Thanks for playing!");
 
     return EXIT_SUCCESS;

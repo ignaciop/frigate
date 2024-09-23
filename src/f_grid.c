@@ -4,7 +4,7 @@
 
 #include "f_grid.h"
 
-struct grid *new_grid(int grid_size) {
+struct grid *new_grid(const int grid_size) {
     struct grid *ng = (struct grid *)malloc(sizeof(struct grid));
     
     if (ng == NULL) {
@@ -70,7 +70,7 @@ void ships_grid(struct grid *gd) {
         
         gd->ships[count] = nc;
     
-        count++;
+        ++count;
     }
     
     /* Add one battleship */
@@ -80,7 +80,7 @@ void ships_grid(struct grid *gd) {
         
         gd->ships[count] = nb;
     
-        count++;
+        ++count;
     }
     
      /* Add two frigates */
@@ -90,11 +90,11 @@ void ships_grid(struct grid *gd) {
         
         gd->ships[count] = nf;
     
-        count++;
+        ++count;
     }
 }
 
-int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int orientation) {
+int place_available(const struct grid *gd, const struct ship *sp, const int posx, const int posy, const int orientation) {
     int enabled = 1;
     
     if (orientation) {
@@ -118,7 +118,7 @@ int place_available(struct grid *gd, struct ship *sp, int posx, int posy, int or
     return enabled;
 }
 
-void place_ship(struct grid *gd, struct ship *sp, int posx, int posy) {
+void place_ship(struct grid *gd, const struct ship *sp, int posx, int posy) {
     int orientation = 0;
     
     do {
@@ -142,15 +142,11 @@ void place_ship(struct grid *gd, struct ship *sp, int posx, int posy) {
     }
 }
 
-int valid_position(const struct grid *gd, int posx, int posy) {
+int valid_position(const struct grid *gd, const int posx, const int posy) {
     int posx_valid = (0 <= posx) && (posx < gd->size);
     int posy_valid = (0 <= posy) && (posy < gd->size);
     
     return posx_valid && posy_valid;
-}
-
-void set_value_at(struct grid *gd, int pos_x, int pos_y, char value) {
-    gd->elements[pos_x][pos_y] = value;
 }
 
 void print_grid(const struct grid *gd) {

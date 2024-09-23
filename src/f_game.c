@@ -4,35 +4,57 @@
 
 #include "f_game.h"
 
-int play_game(struct grid *sg, struct grid *ug, int shots) {
+int play_game(struct grid *sg, struct grid *ug, int shots, struct sg_queue *posx_visited, struct sg_queue *posy_visited) {
     int game_res = 0;
-    //int shots = shells;
+    int ships_sunken = 0;
+    int rem_shots = shots;
     
-    while (shots > 0) {
-        print_grid(ug);
-
-        char chars_pos[3] = "   ";
+    print_grid(ug);
+    
+    while (rem_shots > 0) {
+        char chars_pos[3] = {'0'};
         int nums_pos[2] = {0};
-
+        
         /* Enter alphanumeric coordinates until valid (in grid size range) */
         do {
-            printf("Enter the coordinate for your shot (%d %s remaining): ", shots, (shots != 1) ? "shots" : "shot");
-            scanf("%3s%*[^\n]", chars_pos);
+            printf("Enter the coordinate for your shot (%d %s remaining): ", rem_shots, (rem_shots != 1) ? "shots" : "shot");
+            scanf("%3s%*[^\n]", chars_pos); 
         } while(!valid_input(ug, chars_pos, nums_pos));
+        
+        /* Check if the position was already entered */
+        if (repeated(nums_pos, posx_visited, posy_visited)) {
+            printf("%s\n\n", "Coordinate already entered!");
+            
+            continue;
+        }
 
-        int hm = is_hit(sg, ug, nums_pos[0], nums_pos[1]);
-
-        printf("\n%s %s\n", chars_pos, (hm) ? "is a hit!" : "is a miss!");
+        int hm = is_hit(sg, ug, nums_pos[0], nums_pos[1], &ships_sunken);
+        
+        printf((chars_pos[2] == ' ') ? "\n%s%s\n" : "\n%s %s\n", chars_pos, (hm) ? "is a hit!" : "is a miss!");
+        
+        print_grid(ug);
        
-        shots--;
+        --rem_shots;
+        
+        if (rem_shots < TOTAL_SHIPS - ships_sunken) {
+            printf("%s\n", "You do not have enough shells left to sink the remaining ships.");
+            
+            break;
+        }
     }
     
     printf("%s\n", "Here is the original ship locations.");
     print_grid(sg);
     
+    printf((ships_sunken == 1) ? "You sunk %d ship.\n\n" : "You sunk %d ships.\n\n", ships_sunken);
+    
+    if (ships_sunken == TOTAL_SHIPS) {
+        /* Game won */
+        game_res = 1;
+    }
+    
     return game_res;
 }
-
 
 int valid_input(struct grid *gd, char chars_pos[], int nums_pos[]) {
     /* Posible combinations of valid inputs */
@@ -72,6 +94,8 @@ int valid_input(struct grid *gd, char chars_pos[], int nums_pos[]) {
             posx = (chars_pos[0] - '0') * 10 + (chars_pos[1] - '0') - 1;
             posy = chars_pos[2] - 'A';
         }
+    } else {
+        printf("%s\n\n", "Please enter a valid coordinate!");
     }
     
     int vd = valid_position(gd, posx, posy);
@@ -80,17 +104,47 @@ int valid_input(struct grid *gd, char chars_pos[], int nums_pos[]) {
         nums_pos[0] = posx;
         nums_pos[1] = posy;
         
-        swap_chars(chars_pos);
+        organize_input(chars_pos);
     }
     
     return vd;
 }
 
-int is_hit(struct grid *sg, struct grid *ug, int posx, int posy) {
+int repeated(int nums_pos[], struct sg_queue *posx_visited, struct sg_queue *posy_visited) {
+    int is_repeated = 0;
+    int qsize = sg_queue_size(posx_visited);
+    
+    int i = 0;
+    
+    while (i < qsize) {
+        int posxs = value_at(posx_visited, i);
+        int posys = value_at(posy_visited, i);
+        
+        if (nums_pos[0] == posxs && nums_pos[1] == posys) {
+            is_repeated = 1;
+            
+            break;
+        }
+        
+        i++; 
+    }
+    
+    /* Add to queue if is not repeated or first coordinate */
+    if (!is_repeated || qsize == 0) {
+        sg_queue_enqueue(posx_visited, nums_pos[0]);
+        sg_queue_enqueue(posy_visited, nums_pos[1]);
+    }
+    
+    return is_repeated;
+}
+
+int is_hit(struct grid *sg, struct grid *ug, int posx, int posy, int *sh_sunken) {
     int hm = 0;
     
     if (sg->elements[posx][posy] != WATER) {
         ug->elements[posx][posy] = HIT;
+        
+        update_damage(sg, posx, posy, sh_sunken);
         
         hm = 1;
     } else {
@@ -100,9 +154,28 @@ int is_hit(struct grid *sg, struct grid *ug, int posx, int posy) {
     return hm;
 }
 
-void swap_chars(char chars_pos[]) {
+void update_damage(struct grid *sg, int posx, int posy, int *sh_sunken) {
+    char elem_hitted = sg->elements[posx][posy];
+    
+    for (int i = 0; i < TOTAL_SHIPS; i++) {
+        if (sg->ships[i]->type == elem_hitted && !(sg->ships[i]->sunken_fg)) {
+            --(sg->ships[i]->health);
+            
+            int damage_threshold = (int)(sg->ships[i]->size * 70.0 / 100);
+            
+            if (sg->ships[i]->health < damage_threshold) {
+                sg->ships[i]->sunken_fg = 1;
+                
+                (*sh_sunken)++;
+            }
+        }
+    }
+}
+
+void organize_input(char chars_pos[]) {
     /* Already sanitized input, from 2 to 3 characters representing a valid position */ 
     /* (i.e.: A1, a1, 1a, 1A, 12a, 12A, A12, a12, a02, 02a, A02, 02A) */
+    /* Order output (letter first, number second) */
     char c0 = chars_pos[0];
     char c1 = chars_pos[1];
     char c2 = chars_pos[2];

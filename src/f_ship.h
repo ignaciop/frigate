@@ -12,10 +12,11 @@
 struct ship {
     char type;
     int size;
-    double health;
+    int health;
+    int sunken_fg;
 };
 
-struct ship *new_ship(char s_type, int s_size);
+struct ship *new_ship(const char s_type, const int s_size);
 void delete_ship(struct ship *sp);
 
 #endif
