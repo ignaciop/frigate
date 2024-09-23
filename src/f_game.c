@@ -56,7 +56,7 @@ int play_game(struct grid *sg, struct grid *ug, int shots, struct sg_queue *posx
     return game_res;
 }
 
-int valid_input(struct grid *gd, char chars_pos[], int nums_pos[]) {
+int valid_input(const struct grid *gd, char chars_pos[], int nums_pos[]) {
     /* Posible combinations of valid inputs */
     int cond1 = isalpha(chars_pos[0]) && isdigit(chars_pos[1]);
     int cond2 = isalpha(chars_pos[1]) && isdigit(chars_pos[0]);
@@ -67,11 +67,13 @@ int valid_input(struct grid *gd, char chars_pos[], int nums_pos[]) {
     int cond5 = isdigit(chars_pos[0]) && isalpha(chars_pos[1]) && isalpha(chars_pos[2]);
     int cond6 = isdigit(chars_pos[0]) && isalpha(chars_pos[1]) && isdigit(chars_pos[2]);
     int cond7 = isalpha(chars_pos[0]) && isdigit(chars_pos[1]) && isalpha(chars_pos[2]);
+    int cond8 = isalpha(chars_pos[0]) && isalpha(chars_pos[1]) && isalpha(chars_pos[2]);
+    int cond9 = isalpha(chars_pos[0]) && isalpha(chars_pos[1]) && isdigit(chars_pos[2]);
     
     int posx = -1;
     int posy = -1;
     
-    if (!(cond5 || cond6 || cond7)) {
+    if (!(cond5 || cond6 || cond7 || cond8 || cond9)) {
         /* Check if alphanumeric inputs are valid and saving them in an array */
         if (cond1 && !cond3 && !cond4) {
             chars_pos[0] = toupper(chars_pos[0]);
@@ -110,7 +112,41 @@ int valid_input(struct grid *gd, char chars_pos[], int nums_pos[]) {
     return vd;
 }
 
-int repeated(int nums_pos[], struct sg_queue *posx_visited, struct sg_queue *posy_visited) {
+int is_hit(struct grid *sg, struct grid *ug, const int posx, const int posy, int *sh_sunken) {
+    int hm = 0;
+    
+    if (sg->elements[posx][posy] != WATER) {
+        ug->elements[posx][posy] = HIT;
+        
+        update_damage(sg, posx, posy, sh_sunken);
+        
+        hm = 1;
+    } else {
+        ug->elements[posx][posy] = MISS;
+    }
+    
+    return hm;
+}
+
+void update_damage(struct grid *sg, const int posx, const int posy, int *sh_sunken) {
+    char elem_hitted = sg->elements[posx][posy];
+    
+    for (int i = 0; i < TOTAL_SHIPS; i++) {
+        if (sg->ships[i]->type == elem_hitted && !(sg->ships[i]->sunken_fg)) {
+            --(sg->ships[i]->health);
+            
+            int damage_threshold = (int)(sg->ships[i]->size * 70.0 / 100);
+            
+            if (sg->ships[i]->health < damage_threshold) {
+                sg->ships[i]->sunken_fg = 1;
+                
+                (*sh_sunken)++;
+            }
+        }
+    }
+}
+
+int repeated(const int nums_pos[], struct sg_queue *posx_visited, struct sg_queue *posy_visited) {
     int is_repeated = 0;
     int qsize = sg_queue_size(posx_visited);
     
@@ -136,40 +172,6 @@ int repeated(int nums_pos[], struct sg_queue *posx_visited, struct sg_queue *pos
     }
     
     return is_repeated;
-}
-
-int is_hit(struct grid *sg, struct grid *ug, int posx, int posy, int *sh_sunken) {
-    int hm = 0;
-    
-    if (sg->elements[posx][posy] != WATER) {
-        ug->elements[posx][posy] = HIT;
-        
-        update_damage(sg, posx, posy, sh_sunken);
-        
-        hm = 1;
-    } else {
-        ug->elements[posx][posy] = MISS;
-    }
-    
-    return hm;
-}
-
-void update_damage(struct grid *sg, int posx, int posy, int *sh_sunken) {
-    char elem_hitted = sg->elements[posx][posy];
-    
-    for (int i = 0; i < TOTAL_SHIPS; i++) {
-        if (sg->ships[i]->type == elem_hitted && !(sg->ships[i]->sunken_fg)) {
-            --(sg->ships[i]->health);
-            
-            int damage_threshold = (int)(sg->ships[i]->size * 70.0 / 100);
-            
-            if (sg->ships[i]->health < damage_threshold) {
-                sg->ships[i]->sunken_fg = 1;
-                
-                (*sh_sunken)++;
-            }
-        }
-    }
 }
 
 void organize_input(char chars_pos[]) {

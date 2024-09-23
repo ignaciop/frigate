@@ -24,7 +24,6 @@ int main(void) {
             printf("\n%s", "Please enter a number! How large should I make the grid? ");
         }
 
-
         if (grid_size < MIN_GRID_SIZE) {
             printf("The minimum grid size is %d... I'll create one that size.\n", MIN_GRID_SIZE);
     

@@ -58,7 +58,7 @@ void ships_grid(struct grid *gd) {
     int posx_start = -1;
     int posy_start = -1;
     
-    /* Seed */
+    /* Seed for random numbers */
     srand(time(NULL));
     
     int count = 0;
