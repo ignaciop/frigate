@@ -45,7 +45,6 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
     
     printf("%s\n", "Here is the original ship locations.");
     print_grid(sg);
-    print_grid(ig);
     
     printf((ships_sunken == 1) ? "You sunk %d ship.\n\n" : "You sunk %d ships.\n\n", ships_sunken);
     
