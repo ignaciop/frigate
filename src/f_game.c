@@ -30,7 +30,7 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
 
         int hm = is_hit(sg, ug, ig, nums_pos[0], nums_pos[1], &ships_sunken);
         
-        printf((chars_pos[2] == ' ') ? "\n%s%s\n" : "\n%s %s\n", chars_pos, (hm) ? "is a hit!" : "is a miss!");
+        printf((chars_pos[2] == ' ') ? "\n\033[1;37m%s%s\n" : "\n\033[1;37m%s %s\n", chars_pos, (hm) ? HIT_COLOR "is a hit!" RESET_COLOR : MISS_COLOR "is a miss!" RESET_COLOR);
         
         print_grid(ug);
        
@@ -46,7 +46,7 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
     printf("%s\n", "Here is the original ship locations.");
     print_grid(sg);
     
-    printf((ships_sunken == 1) ? "You sunk %d ship.\n\n" : "You sunk %d ships.\n\n", ships_sunken);
+    printf((ships_sunken == 1) ? "You sunk \033[1;37m%d" RESET_COLOR " ship.\n\n" : "You sunk \033[1;37m%d" RESET_COLOR " ships.\n\n", ships_sunken);
     
     if (ships_sunken == TOTAL_SHIPS) {
         /* Game won */

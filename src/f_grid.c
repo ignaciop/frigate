@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #include "f_grid.h"
 
@@ -193,7 +194,33 @@ void print_grid(const struct grid *gd) {
         printf("%2i | ", i + 1);
         
         for (int j = 0; j < gd->size; j++) {
-            printf((j == gd->size - 1) ? "%c\n" : "%c ", gd->elements[i][j]);
+            char element = gd->elements[i][j];
+            char color_pf[8] = {'0'};
+            
+            switch (element) {
+                case WATER:
+                    strncpy(color_pf, WATER_COLOR, 8);
+                    break;
+                case HIT:
+                    strncpy(color_pf, HIT_COLOR, 8);
+                    break;
+                case MISS:
+                    strncpy(color_pf, MISS_COLOR, 8);
+                    break;
+                case CARRIER_TYPE:
+                    strncpy(color_pf, CARRIER_COLOR, 8);
+                    break;
+                case BATTLESHIP_TYPE:
+                    strncpy(color_pf, BATTLESHIP_COLOR, 8);
+                    break;
+                case FRIGATE_TYPE:
+                    strncpy(color_pf, FRIGATE_COLOR, 8);
+                    break;
+                default:
+                    break;
+            }
+
+            printf((j == gd->size - 1) ? "%s%c%s\n" : "%s%c%s ", color_pf, element, RESET_COLOR);
         }
     }
     
