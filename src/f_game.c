@@ -30,7 +30,7 @@ int play_game(struct grid *sg, struct grid *ug, int shots, struct sg_queue *posx
 
         int hm = is_hit(sg, ug, nums_pos[0], nums_pos[1], &ships_sunken);
         
-        printf((chars_pos[2] == ' ') ? "\n%s%s\n" : "\n%s %s\n", chars_pos, (hm) ? "is a hit!" : "is a miss!");
+        printf((chars_pos[2] == ' ') ? "\n\033[1;37m%s%s\n" : "\n\033[1;37m%s %s\n", chars_pos, (hm) ? HIT_COLOR "is a hit!" RESET_COLOR : MISS_COLOR "is a miss!" RESET_COLOR);
         
         print_grid(ug);
        

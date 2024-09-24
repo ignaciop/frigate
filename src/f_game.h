@@ -7,9 +7,6 @@
 #define MIN_GRID_SIZE 5
 #define MAX_GRID_SIZE 20
 
-#define HIT 'h'
-#define MISS 'm'
-
 int play_game(struct grid *sg, struct grid *ug, int shots, struct sg_queue *posx_visited, struct sg_queue *posy_visited);
 int valid_input(const struct grid *gd, char chars_pos[], int nums_pos[]);
 int is_hit(struct grid *sg, struct grid *ug, const int posx, const int posy, int *sh_sunken);
