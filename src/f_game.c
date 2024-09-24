@@ -135,7 +135,7 @@ void update_damage(struct grid *sg, const int posx, const int posy, int *sh_sunk
         if (sg->ships[i]->type == elem_hitted && !(sg->ships[i]->sunken_fg)) {
             --(sg->ships[i]->health);
             
-            int damage_threshold = (int)(sg->ships[i]->size * 70.0 / 100);
+            int damage_threshold = (int)((sg->ships[i]->size) * 70.0 / 100);
             
             if (sg->ships[i]->health < damage_threshold) {
                 sg->ships[i]->sunken_fg = 1;
