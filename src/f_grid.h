@@ -12,14 +12,6 @@
 #define HIT 'h'
 #define MISS 'm'
 
-#define HIT_COLOR "\033[1;91m"
-#define MISS_COLOR "\033[1;92m"
-#define CARRIER_COLOR "\033[1;93m"
-#define BATTLESHIP_COLOR "\033[1;94m"
-#define FRIGATE_COLOR "\033[1;95m"
-#define WATER_COLOR "\033[1;96m"
-#define RESET_COLOR "\033[0m"
-
 struct grid {
     int size;
     char **elements;
@@ -27,10 +19,11 @@ struct grid {
 };
 
 struct grid *new_grid(const int grid_size);
+void ids_grid(struct grid *gd);
 void water_grid(struct grid *gd);
-void ships_grid(struct grid *gd);
+void data_grid(struct grid *sd, struct grid *ig);
 int place_available(const struct grid *gd, const struct ship *sp, const int posx, const int posy, const int orientation);
-void place_ship(struct grid *gd, const struct ship *sp, int posx, int posy);
+void place_ship(struct grid *gd, struct grid *ig, const struct ship *sp, int posx, int posy);
 int valid_position(const struct grid *gd, const int posx, const int posy);
 void print_grid(const struct grid *gd);
 void delete_grid(struct grid *gd);

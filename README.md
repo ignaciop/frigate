@@ -9,6 +9,6 @@ The computer next randomly places four ships (one carrier of 5 squares, one batt
 
 Coordinates are noted by row/column, where row is a number and column a letter. A player can enter coordinates either row or column first (i.e., 1a or A1). Upper or lower case letters are allowed. White space is not allowed. Coordinates are checked for validity; they must lie within the grid and a player can enter a coordinate only once per game. 
 
-A ship is "destroyed" when over 70% of its structure has been hit.
+A ship is "destroyed" when all of its structure has been hit.
 
 Usage: ***make release && build/release/frigate***

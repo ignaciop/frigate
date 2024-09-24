@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
 
 #include "f_grid.h"
 
@@ -43,6 +42,15 @@ struct grid *new_grid(const int grid_size) {
     return ng;
 }
 
+void ids_grid(struct grid *gd) {
+    /* Fill the grid with 'X', to accomodate ship ids */
+    for (int i = 0; i < gd->size; i++) {
+        for (int j = 0; j < gd->size; j++) {
+            gd->elements[i][j] = 'X';
+        }
+    }
+}
+
 void water_grid(struct grid *gd) {
     /* Fill the grid with water */
     for (int i = 0; i < gd->size; i++) {
@@ -52,9 +60,12 @@ void water_grid(struct grid *gd) {
     }
 }
 
-void ships_grid(struct grid *gd) {
-    /* Fill the grid with water */
+void data_grid(struct grid *gd, struct grid *ig) {
+    /* Fill the ship grid with water */
     water_grid(gd);
+    
+    /* Fill the ship id grid with 'X' */
+    ids_grid(ig);
     
     int posx_start = -1;
     int posy_start = -1;
@@ -67,7 +78,9 @@ void ships_grid(struct grid *gd) {
     /* Add one carrier */
     for (int i = 0; i < CARRIERS; i++) {
         struct ship *nc = new_ship(CARRIER_TYPE, CARRIER_SIZE);
-        place_ship(gd, nc, posx_start, posy_start);
+        nc->id = count + '0';
+        
+        place_ship(gd, ig, nc, posx_start, posy_start);
         
         gd->ships[count] = nc;
     
@@ -77,7 +90,9 @@ void ships_grid(struct grid *gd) {
     /* Add one battleship */
     for (int i = 0; i < BATTLESHIPS; i++) {
         struct ship *nb = new_ship(BATTLESHIP_TYPE, BATTLESHIP_SIZE);
-        place_ship(gd, nb, posx_start, posy_start);
+        nb->id = count + '0';
+        
+        place_ship(gd, ig, nb, posx_start, posy_start);
         
         gd->ships[count] = nb;
     
@@ -87,7 +102,9 @@ void ships_grid(struct grid *gd) {
      /* Add two frigates */
     for (int i = 0; i < FRIGATES; i++) {
         struct ship *nf = new_ship(FRIGATE_TYPE, FRIGATE_SIZE);
-        place_ship(gd, nf, posx_start, posy_start);
+        nf->id = count + '0';
+        
+        place_ship(gd, ig, nf, posx_start, posy_start);
         
         gd->ships[count] = nf;
     
@@ -119,7 +136,7 @@ int place_available(const struct grid *gd, const struct ship *sp, const int posx
     return enabled;
 }
 
-void place_ship(struct grid *gd, const struct ship *sp, int posx, int posy) {
+void place_ship(struct grid *gd, struct grid *ig, const struct ship *sp, int posx, int posy) {
     int orientation = 0;
     
     do {
@@ -134,11 +151,13 @@ void place_ship(struct grid *gd, const struct ship *sp, int posx, int posy) {
         /* Place ship horizontally */
         for (int j = 0; j < sp->size; j++) {
             gd->elements[posx][posy + j] = sp->type;
+            ig->elements[posx][posy + j] = sp->id;
         }
     } else {
         /* Place ship vertically */
         for (int i = 0; i < sp->size; i++) {
             gd->elements[posx + i][posy] = sp->type;
+            ig->elements[posx + i][posy] = sp->id;
         }
     }
 }
@@ -174,33 +193,7 @@ void print_grid(const struct grid *gd) {
         printf("%2i | ", i + 1);
         
         for (int j = 0; j < gd->size; j++) {
-            char element = gd->elements[i][j];
-            char color_pf[8] = {'0'};
-            
-            switch (element) {
-                case WATER:
-                    strncpy(color_pf, WATER_COLOR, 8);
-                    break;
-                case HIT:
-                    strncpy(color_pf, HIT_COLOR, 8);
-                    break;
-                case MISS:
-                    strncpy(color_pf, MISS_COLOR, 8);
-                    break;
-                case CARRIER_TYPE:
-                    strncpy(color_pf, CARRIER_COLOR, 8);
-                    break;
-                case BATTLESHIP_TYPE:
-                    strncpy(color_pf, BATTLESHIP_COLOR, 8);
-                    break;
-                case FRIGATE_TYPE:
-                    strncpy(color_pf, FRIGATE_COLOR, 8);
-                    break;
-                default:
-                    break;
-            }
-
-            printf((j == gd->size - 1) ? "%s%c%s\n" : "%s%c%s ", color_pf, element, RESET_COLOR);
+            printf((j == gd->size - 1) ? "%c\n" : "%c ", gd->elements[i][j]);
         }
     }
     

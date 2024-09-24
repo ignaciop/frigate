@@ -15,6 +15,7 @@ struct ship *new_ship(const char s_type, const int s_size) {
     ns->type = s_type;
     ns->size = ns->health = s_size;
     ns->sunken_fg = 0;
+    ns->id = '0';
     
     return ns;
 }

@@ -36,18 +36,19 @@ int main(void) {
         
         int shells = (grid_size * grid_size) >> 1;
 
-        /* Set up ships grid (data) and user grid (guesses) */
+        /* Set up ships and ids grid (data), user grid (guesses) */
         struct grid *sg = new_grid(grid_size);
         struct grid *ug = new_grid(grid_size);
+        struct grid *ig = new_grid(grid_size);
         
-        ships_grid(sg);
+        data_grid(sg, ig);
         water_grid(ug);
         
         /* Set up queues for visited positions */
         struct sg_queue *posx_visited = sg_queue_create();
         struct sg_queue *posy_visited = sg_queue_create();
 
-        int pg = play_game(sg, ug, shells, posx_visited, posy_visited);
+        int pg = play_game(sg, ug, ig, shells, posx_visited, posy_visited);
         total_games++;
         
         if (pg) {
@@ -58,6 +59,7 @@ int main(void) {
         sg_queue_destroy(&posy_visited);
                
         delete_grid(sg);
+        delete_grid(ig);
         delete_grid(ug);
         
         printf("%s", "Play again (y/N)? ");
