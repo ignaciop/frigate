@@ -35,17 +35,19 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
         print_grid(ug);
        
         --rem_shots;
+        
+        if (ships_sunken == TOTAL_SHIPS) {
+            /* Game won */
+            game_res = 1;
+        
+            break;
+        }
     }
     
     printf("%s\n", "Here is the original ship locations.");
     print_grid(sg);
     
     printf((ships_sunken == 1) ? "You sunk \033[1;37m%d" RESET_COLOR " ship.\n\n" : "You sunk \033[1;37m%d" RESET_COLOR " ships.\n\n", ships_sunken);
-    
-    if (ships_sunken == TOTAL_SHIPS) {
-        /* Game won */
-        game_res = 1;
-    }
     
     return game_res;
 }
