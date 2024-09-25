@@ -24,6 +24,7 @@ struct grid {
     int size;
     char **elements;
     struct ship *ships[TOTAL_SHIPS];
+    int ships_sunken;
 };
 
 struct grid *new_grid(const int grid_size);

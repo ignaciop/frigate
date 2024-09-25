@@ -6,7 +6,6 @@
 
 int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, struct sg_queue *posx_visited, struct sg_queue *posy_visited) {
     int game_res = 0;
-    int ships_sunken = 0;
     int rem_shots = shots;
     
     print_grid(ug);
@@ -28,15 +27,19 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
             continue;
         }
 
-        int hm = is_hit(sg, ug, ig, nums_pos[0], nums_pos[1], &ships_sunken);
+        int hm = is_hit(sg, ug, ig, nums_pos[0], nums_pos[1]);
         
-        printf((chars_pos[2] == ' ') ? "\n\033[1;37m%s%s\n" : "\n\033[1;37m%s %s\n", chars_pos, (hm) ? HIT_COLOR "is a hit!" RESET_COLOR : MISS_COLOR "is a miss!" RESET_COLOR);
-        
+        if (chars_pos[2] == ' ') {
+            printf("\n\033[1;37m%c%c %s\n", chars_pos[0], chars_pos[1], (hm) ? HIT_COLOR "is a hit!" RESET_COLOR : MISS_COLOR "is a miss!" RESET_COLOR);
+        } else {
+            printf("\n\033[1;37m%c%c%c %s\n", chars_pos[0], chars_pos[1], chars_pos[2], (hm) ? HIT_COLOR "is a hit!" RESET_COLOR : MISS_COLOR "is a miss!" RESET_COLOR);
+        }
+ 
         print_grid(ug);
        
         --rem_shots;
         
-        if (ships_sunken == TOTAL_SHIPS) {
+        if (sg->ships_sunken == TOTAL_SHIPS) {
             /* Game won */
             game_res = 1;
         
@@ -47,7 +50,7 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
     printf("%s\n", "Here is the original ship locations.");
     print_grid(sg);
     
-    printf((ships_sunken == 1) ? "You sunk \033[1;37m%d" RESET_COLOR " ship.\n\n" : "You sunk \033[1;37m%d" RESET_COLOR " ships.\n\n", ships_sunken);
+    printf((sg->ships_sunken == 1) ? "You sunk \033[1;37m%d" RESET_COLOR " ship.\n\n" : "You sunk \033[1;37m%d" RESET_COLOR " ships.\n\n", sg->ships_sunken);
     
     return game_res;
 }
@@ -108,13 +111,13 @@ int valid_input(const struct grid *gd, char chars_pos[], int nums_pos[]) {
     return vd;
 }
 
-int is_hit(struct grid *sg, struct grid *ug, struct grid *ig, const int posx, const int posy, int *sh_sunken) {
+int is_hit(struct grid *sg, struct grid *ug, struct grid *ig, const int posx, const int posy) {
     int hm = 0;
     
     if (sg->elements[posx][posy] != WATER) {
         ug->elements[posx][posy] = HIT;
         
-        update_damage(sg, ig, posx, posy, sh_sunken);
+        update_damage(sg, ig, posx, posy);
         
         hm = 1;
     } else {
@@ -124,18 +127,16 @@ int is_hit(struct grid *sg, struct grid *ug, struct grid *ig, const int posx, co
     return hm;
 }
 
-void update_damage(struct grid *sg, struct grid *ig, const int posx, const int posy, int *sh_sunken) {
+void update_damage(struct grid *sg, struct grid *ig, const int posx, const int posy) {
     char elem_hitted = sg->elements[posx][posy];
     char id_hitted = ig->elements[posx][posy];
     
     for (int i = 0; i < TOTAL_SHIPS; i++) {
-        if (!sg->ships[i]->sunken_fg && sg->ships[i]->type == elem_hitted && sg->ships[i]->id == id_hitted) {
+        if (sg->ships[i]->type == elem_hitted && sg->ships[i]->id == id_hitted) {
             sg->ships[i]->health--;
             
             if (sg->ships[i]->health == 0) {
-                sg->ships[i]->sunken_fg = 1;
-                
-                (*sh_sunken)++;
+                sg->ships_sunken++;
             }
             
             break;
