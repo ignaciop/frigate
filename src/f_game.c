@@ -35,12 +35,6 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
         print_grid(ug);
        
         --rem_shots;
-        
-        if (rem_shots < TOTAL_SHIPS - ships_sunken) {
-            printf("%s\n", "You do not have enough shells left to sink the remaining ships.");
-            
-            break;
-        }
     }
     
     printf("%s\n", "Here is the original ship locations.");
