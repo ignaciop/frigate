@@ -13,7 +13,6 @@ struct ship {
     char type;
     int size;
     int health;
-    int sunken_fg;
     char id;
 };
 

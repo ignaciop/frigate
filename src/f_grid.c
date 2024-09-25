@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #include "f_grid.h"
 
@@ -38,6 +39,8 @@ struct grid *new_grid(const int grid_size) {
     for (int i = 0; i < TOTAL_SHIPS; i++) {
         ng->ships[i] = NULL;
     }
+    
+    ng->ships_sunken = 0;
 
     return ng;
 }

@@ -12,10 +12,19 @@
 #define HIT 'h'
 #define MISS 'm'
 
+#define HIT_COLOR "\033[1;91m"
+#define MISS_COLOR "\033[1;92m"
+#define CARRIER_COLOR "\033[1;93m"
+#define BATTLESHIP_COLOR "\033[1;94m"
+#define FRIGATE_COLOR "\033[1;95m"
+#define WATER_COLOR "\033[1;96m"
+#define RESET_COLOR "\033[0m"
+
 struct grid {
     int size;
     char **elements;
     struct ship *ships[TOTAL_SHIPS];
+    int ships_sunken;
 };
 
 struct grid *new_grid(const int grid_size);
