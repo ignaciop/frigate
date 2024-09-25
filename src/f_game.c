@@ -30,10 +30,12 @@ int play_game(struct grid *sg, struct grid *ug, struct grid *ig, int shots, stru
         int hm = is_hit(sg, ug, ig, nums_pos[0], nums_pos[1]);
         
         if (chars_pos[2] == ' ') {
-            printf("\n%c%c %s\n", chars_pos[0], chars_pos[1], (hm) ? "is a hit!" : "is a miss!");
+            printf("\n%c%c ", chars_pos[0], chars_pos[1]);
         } else {
-            printf("\n%c%c%c %s\n", chars_pos[0], chars_pos[1], chars_pos[2], (hm) ? "is a hit!" : "is a miss!");
+            printf("\n%c%c%c ", chars_pos[0], chars_pos[1], chars_pos[2]);
         }
+        
+        printf((hm) ? "is a hit!\n" : "is a miss!\n");
  
         print_grid(ug);
        
